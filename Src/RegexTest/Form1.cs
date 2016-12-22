@@ -506,7 +506,7 @@ namespace RegexTest
 			this.button1.TabIndex = 5;
 			this.button1.Text = "Execute";
 			this.toolTip1.SetToolTip(this.button1, "Execute this regex");
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.button1.Click += new System.EventHandler((sender, e) => ExecuteClick(this, sender, e));
 			// 
 			// label3
 			// 
@@ -1445,22 +1445,22 @@ namespace RegexTest
 			return new Regex(RegexText.Text, regOp);
 		}
 
-		private void button1_Click(object sender, System.EventArgs e)
+		private static void ExecuteClick(Form1 form1, object sender, System.EventArgs e)
 		{
-			SaveValues();
+		    form1.SaveValues();
 
 			Regex regex = null;
 			try
 			{
 				Counter counter = new Counter();
 				counter.Start();
-				regex = CreateRegex();
+				regex = form1.CreateRegex();
 				counter.Stop();
-				this.CompileTime.Text = counter.Seconds.ToString();
+				form1.CompileTime.Text = counter.Seconds.ToString();
 			}
 			catch (Exception ex)
 			{
-				Output.Text = ex.ToString();
+			    form1.Output.Text = ex.ToString();
 				return;
 			}
 
@@ -1468,14 +1468,14 @@ namespace RegexTest
 
 			string[] strings;
 				// if checked, pass all lines as a single block
-			if (OneString.Checked)
+			if (form1.OneString.Checked)
 			{
 				strings = new string[1];
-				strings[0] = Strings.Text;
+				strings[0] = form1.Strings.Text;
 			}
 			else
 			{
-				strings = Regex.Split(Strings.Text, @"\r\n");
+				strings = Regex.Split(form1.Strings.Text, @"\r\n");
 				//strings = Strings.Text.Split('\n\r');
 			}
 
@@ -1484,8 +1484,8 @@ namespace RegexTest
 			{
 				outString.Append(String.Format("Matching: {0}\r\n", s));
 
-				Elapsed.Text = "";
-				int iterations = Convert.ToInt32(Iterations.Text);
+			    form1.Elapsed.Text = "";
+				int iterations = Convert.ToInt32(form1.Iterations.Text);
 				Counter counter = new Counter();
 				counter.Start();
 				Match m = null;
@@ -1498,7 +1498,7 @@ namespace RegexTest
 					}
 				}
 				counter.Stop();
-				Elapsed.Text = String.Format("{0:f2}", counter.Seconds);
+			    form1.Elapsed.Text = String.Format("{0:f2}", counter.Seconds);
 
 				m = regex.Match(s);
 				bool noMatch = true;
@@ -1512,7 +1512,7 @@ namespace RegexTest
 					{
 						foreach (Capture capture in group.Captures)
 						{
-							if ((HideGroupZero.Checked == false) ||
+							if ((form1.HideGroupZero.Checked == false) ||
 								(groupNames[groupNumber] != "0"))
 							{
 								outString.Append(String.Format("    {0} => {1}\r\n", groupNames[groupNumber], capture));
@@ -1529,7 +1529,7 @@ namespace RegexTest
 					outString.Append("    No Match\r\n");
 				}
 			}
-			Output.Text = outString.ToString();
+		    form1.Output.Text = outString.ToString();
 		}
 
 		#region SaveRestore
