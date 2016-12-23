@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Timing;
 
 namespace RegexTest
@@ -506,7 +507,7 @@ namespace RegexTest
 			this.button1.TabIndex = 5;
 			this.button1.Text = "Execute";
 			this.toolTip1.SetToolTip(this.button1, "Execute this regex");
-			this.button1.Click += new System.EventHandler((sender, e) => ExecuteClick(this, sender, e));
+			this.button1.Click += new System.EventHandler(MatchClick);
 			// 
 			// label3
 			// 
@@ -620,7 +621,7 @@ namespace RegexTest
 			this.Split.TabIndex = 18;
 			this.Split.Text = "Split";
 			this.toolTip1.SetToolTip(this.Split, "Call Regex.Split()");
-			this.Split.Click += new System.EventHandler(this.Split_Click);
+			this.Split.Click += new System.EventHandler(this.SplitClick);
 			// 
 			// CompileTime
 			// 
@@ -1106,7 +1107,7 @@ namespace RegexTest
 			this.Replace.TabIndex = 38;
 			this.Replace.Text = "Replace";
 			this.toolTip1.SetToolTip(this.Replace, "Call Regex.Replace");
-			this.Replace.Click += new System.EventHandler(this.Replace_Click);
+			this.Replace.Click += new System.EventHandler(this.ReplaceClick);
 			// 
 			// MatchEvaluator
 			// 
@@ -1445,23 +1446,35 @@ namespace RegexTest
 			return new Regex(RegexText.Text, regOp);
 		}
 
-		private static void ExecuteClick(Form1 form1, object sender, System.EventArgs e)
+		private void MatchClick(object sender, System.EventArgs e)
 		{
-		    form1.SaveValues();
-
-		    Regex regex = GetRegex(form1);
-		    if (regex != null)
-		    {
-		        var strings = GetStrings(form1);
-
-		        using (new TimeOperation(form1.Elapsed))
-		        {
-		            form1.Output.Text =
-		                RegexEvaluator.Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text),
-		                    form1.HideGroupZero.Checked);
-		        }
-		    }
+		    ExecuteOperation(new RegexMatcher(Int32.Parse(Iterations.Text), HideGroupZero.Checked));
 		}
+
+        private void SplitClick(object sender, System.EventArgs e)
+        {
+            ExecuteOperation(new RegexSplitter());
+        }
+
+        private void ReplaceClick(object sender, System.EventArgs e)
+        {
+            ExecuteOperation(new RegexReplacer(MatchEvaluator.Checked, ReplaceString.Text));
+        }
+        private void ExecuteOperation(IRegexOperation regexOperation)
+	    {
+	        SaveValues();
+
+	        Regex regex = GetRegex(this);
+	        if (regex != null)
+	        {
+	            var strings = GetStrings(this);
+
+	            using (new TimeOperation(Elapsed))
+	            {
+	                Output.Text = regexOperation.Execute(regex, strings);
+	            }
+	        }
+	    }
 
 	    private static Regex GetRegex(Form1 form1)
 	    {
@@ -1621,30 +1634,6 @@ namespace RegexTest
 					"Error intepreting regex\r\n" + ex.Message;
 				RegexText.Focus();
 			}
-		}
-
-		private void Split_Click(object sender, System.EventArgs e)
-		{
-			SaveValues();
-            Regex regex = GetRegex(this);
-		    if (regex != null)
-		    {
-		        var strings = GetStrings(this);
-
-		        Output.Text = RegexEvaluator.Split(strings, regex);
-		    }
-		}
-
-	    private void Replace_Click(object sender, System.EventArgs e)
-		{
-			SaveValues();
-            Regex regex = GetRegex(this);
-	        if (regex != null)
-	        {
-	            var strings = GetStrings(this);
-
-	            Output.Text = RegexEvaluator.DoReplace(regex, strings, MatchEvaluator.Checked, ReplaceString.Text);
-	        }
 		}
 
 	    private void makeAssemblyItem_Click(object sender, System.EventArgs e)

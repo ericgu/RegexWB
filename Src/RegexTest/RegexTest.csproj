@@ -126,6 +126,7 @@
     <Compile Include="HoverTooltip.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="IRegexOperation.cs" />
     <Compile Include="LibraryMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -150,19 +151,21 @@
     <Compile Include="RegexConditional.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RegexEvaluator.cs" />
     <Compile Include="RegexExpression.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RegexItem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RegexMatcher.cs" />
     <Compile Include="RegexQuantifier.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RegexRef.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RegexReplacer.cs" />
+    <Compile Include="RegexSplitter.cs" />
     <Compile Include="ReleaseNotes.cs">
       <SubType>Form</SubType>
     </Compile>
