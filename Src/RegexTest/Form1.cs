@@ -1463,25 +1463,14 @@ namespace RegexTest
 		        form1.Output.Text = ex.ToString();
 		    }
 
-		    Execute(form1, regex);
+		    var strings = GetStrings(form1);
+
+		    Execute(form1, regex, strings);
 		}
 
-	    private static void Execute(Form1 form1, Regex regex)
+	    private static void Execute(Form1 form1, Regex regex, string[] strings)
 	    {
 	        string[] groupNames = regex.GetGroupNames();
-
-	        string[] strings;
-	        // if checked, pass all lines as a single block
-	        if (form1.OneString.Checked)
-	        {
-	            strings = new string[1];
-	            strings[0] = form1.Strings.Text;
-	        }
-	        else
-	        {
-	            strings = Regex.Split(form1.Strings.Text, @"\r\n");
-	            //strings = Strings.Text.Split('\n\r');
-	        }
 
 	        StringBuilder outString = new StringBuilder();
 	        foreach (string s in strings)
@@ -1534,6 +1523,23 @@ namespace RegexTest
 	            }
 	        }
 	        form1.Output.Text = outString.ToString();
+	    }
+
+	    private static string[] GetStrings(Form1 form1)
+	    {
+	        string[] strings;
+	        // if checked, pass all lines as a single block
+	        if (form1.OneString.Checked)
+	        {
+	            strings = new string[1];
+	            strings[0] = form1.Strings.Text;
+	        }
+	        else
+	        {
+	            strings = Regex.Split(form1.Strings.Text, @"\r\n");
+	            //strings = Strings.Text.Split('\n\r');
+	        }
+	        return strings;
 	    }
 
 	    #region SaveRestore
