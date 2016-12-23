@@ -1449,90 +1449,94 @@ namespace RegexTest
 		{
 		    form1.SaveValues();
 
-			Regex regex = null;
-			try
-			{
-				Counter counter = new Counter();
-				counter.Start();
-				regex = form1.CreateRegex();
-				counter.Stop();
-				form1.CompileTime.Text = counter.Seconds.ToString();
-			}
-			catch (Exception ex)
-			{
-			    form1.Output.Text = ex.ToString();
-				return;
-			}
+		    Regex regex = null;
+		    try
+		    {
+		        Counter counter = new Counter();
+		        counter.Start();
+		        regex = form1.CreateRegex();
+		        counter.Stop();
+		        form1.CompileTime.Text = counter.Seconds.ToString();
+		    }
+		    catch (Exception ex)
+		    {
+		        form1.Output.Text = ex.ToString();
+		    }
 
-			string[] groupNames = regex.GetGroupNames();
-
-			string[] strings;
-				// if checked, pass all lines as a single block
-			if (form1.OneString.Checked)
-			{
-				strings = new string[1];
-				strings[0] = form1.Strings.Text;
-			}
-			else
-			{
-				strings = Regex.Split(form1.Strings.Text, @"\r\n");
-				//strings = Strings.Text.Split('\n\r');
-			}
-
-			StringBuilder outString = new StringBuilder();
-			foreach (string s in strings)
-			{
-				outString.Append(String.Format("Matching: {0}\r\n", s));
-
-			    form1.Elapsed.Text = "";
-				int iterations = Convert.ToInt32(form1.Iterations.Text);
-				Counter counter = new Counter();
-				counter.Start();
-				Match m = null;
-				for (int i = 0; i < iterations; i++)
-				{
-					m = regex.Match(s);
-					while (m.Success)
-					{
-						m = m.NextMatch();
-					}
-				}
-				counter.Stop();
-			    form1.Elapsed.Text = String.Format("{0:f2}", counter.Seconds);
-
-				m = regex.Match(s);
-				bool noMatch = true;
-				while (m.Success)
-				{
-					noMatch = false;
-					GroupCollection groups = m.Groups;
-					
-					int groupNumber = 0;
-					foreach (Group group in m.Groups)
-					{
-						foreach (Capture capture in group.Captures)
-						{
-							if ((form1.HideGroupZero.Checked == false) ||
-								(groupNames[groupNumber] != "0"))
-							{
-								outString.Append(String.Format("    {0} => {1}\r\n", groupNames[groupNumber], capture));
-							}
-							//CaptureCollection c = group.Captures;
-						}
-						groupNumber++;
-					}
-
-					m = m.NextMatch();
-				}
-				if (noMatch)
-				{
-					outString.Append("    No Match\r\n");
-				}
-			}
-		    form1.Output.Text = outString.ToString();
+		    Execute(form1, regex);
 		}
 
-		#region SaveRestore
+	    private static void Execute(Form1 form1, Regex regex)
+	    {
+	        string[] groupNames = regex.GetGroupNames();
+
+	        string[] strings;
+	        // if checked, pass all lines as a single block
+	        if (form1.OneString.Checked)
+	        {
+	            strings = new string[1];
+	            strings[0] = form1.Strings.Text;
+	        }
+	        else
+	        {
+	            strings = Regex.Split(form1.Strings.Text, @"\r\n");
+	            //strings = Strings.Text.Split('\n\r');
+	        }
+
+	        StringBuilder outString = new StringBuilder();
+	        foreach (string s in strings)
+	        {
+	            outString.Append(String.Format("Matching: {0}\r\n", s));
+
+	            form1.Elapsed.Text = "";
+	            int iterations = Convert.ToInt32(form1.Iterations.Text);
+	            Counter counter = new Counter();
+	            counter.Start();
+	            Match m = null;
+	            for (int i = 0; i < iterations; i++)
+	            {
+	                m = regex.Match(s);
+	                while (m.Success)
+	                {
+	                    m = m.NextMatch();
+	                }
+	            }
+	            counter.Stop();
+	            form1.Elapsed.Text = String.Format("{0:f2}", counter.Seconds);
+
+	            m = regex.Match(s);
+	            bool noMatch = true;
+	            while (m.Success)
+	            {
+	                noMatch = false;
+	                GroupCollection groups = m.Groups;
+
+	                int groupNumber = 0;
+	                foreach (Group group in m.Groups)
+	                {
+	                    foreach (Capture capture in @group.Captures)
+	                    {
+	                        if ((form1.HideGroupZero.Checked == false) ||
+	                            (groupNames[groupNumber] != "0"))
+	                        {
+	                            outString.Append(String.Format("    {0} => {1}\r\n", groupNames[groupNumber], capture));
+	                        }
+	                        //CaptureCollection c = group.Captures;
+	                    }
+	                    groupNumber++;
+	                }
+
+	                m = m.NextMatch();
+	            }
+	            if (noMatch)
+	            {
+	                outString.Append("    No Match\r\n");
+	            }
+	        }
+	        form1.Output.Text = outString.ToString();
+	    }
+
+	    #region SaveRestore
 
 		private void SaveRegex(string filename)
 		{
