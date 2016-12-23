@@ -1635,25 +1635,10 @@ namespace RegexTest
 
             var strings = GetStrings(this);
 
-            StringBuilder outString = new StringBuilder();
-			foreach (string s in strings)
-			{
-				outString.Append(String.Format("Splitting: {0}\r\n", s));			
-
-				string[] arr = regex.Split(s);
-
-				int index = 0;
-				foreach (string split in arr)
-				{
-					outString.Append(String.Format("    [{0}] => {1}\r\n", index, split));
-					index++;
-				}
-			}
-			Output.Text = outString.ToString();
-
+		    Output.Text = RegexEvaluator.Split(strings, regex);
 		}
 
-		private void Replace_Click(object sender, System.EventArgs e)
+	    private void Replace_Click(object sender, System.EventArgs e)
 		{
 			SaveValues();
             Regex regex = GetRegex(this);
