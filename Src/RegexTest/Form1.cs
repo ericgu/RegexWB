@@ -1449,17 +1449,10 @@ namespace RegexTest
 		{
 		    form1.SaveValues();
 
-		    Regex regex = null;
-		    using (new TimeOperation(form1.CompileTime))
+		    Regex regex = GetRegex(form1);
+		    if (regex == null)
 		    {
-		        try
-		        {
-		            regex = form1.CreateRegex();
-		        }
-		        catch (Exception ex)
-		        {
-		            form1.Output.Text = ex.ToString();
-		        }
+		        return;
 		    }
 
 		    var strings = GetStrings(form1);
@@ -1470,6 +1463,24 @@ namespace RegexTest
                     RegexEvaluator.Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text), form1.HideGroupZero.Checked);
 		    }
 		}
+
+	    private static Regex GetRegex(Form1 form1)
+	    {
+	        Regex regex = null;
+	        using (new TimeOperation(form1.CompileTime))
+	        {
+	            try
+	            {
+	                regex = form1.CreateRegex();
+	            }
+	            catch (Exception ex)
+	            {
+	                form1.Output.Text = ex.ToString();
+	                return null;
+	            }
+	        }
+	        return regex;
+	    }
 
 	    private static string[] GetStrings(Form1 form1)
 	    {
@@ -1616,31 +1627,15 @@ namespace RegexTest
 		private void Split_Click(object sender, System.EventArgs e)
 		{
 			SaveValues();
-			Regex regex = null;
-			try
-			{
-				regex = CreateRegex();
-			}
-			catch (Exception ex)
-			{
-				Output.Text = ex.ToString();
-				return;
-			}
+            Regex regex = GetRegex(this);
+            if (regex == null)
+            {
+                return;
+            }
 
-			string[] strings;
-			// if checked, pass all lines as a single block
-			if (OneString.Checked)
-			{
-				strings = new string[1];
-				strings[0] = Strings.Text;
-			}
-			else
-			{
-				strings = Regex.Split(Strings.Text, @"\r\n");
-				//strings = Strings.Text.Split('\n\r');
-			}
+            var strings = GetStrings(this);
 
-			StringBuilder outString = new StringBuilder();
+            StringBuilder outString = new StringBuilder();
 			foreach (string s in strings)
 			{
 				outString.Append(String.Format("Splitting: {0}\r\n", s));			
@@ -1661,31 +1656,15 @@ namespace RegexTest
 		private void Replace_Click(object sender, System.EventArgs e)
 		{
 			SaveValues();
-			Regex regex = null;
-			try
-			{
-				regex = CreateRegex();
-			}
-			catch (Exception ex)
-			{
-				Output.Text = ex.ToString();
-				return;
-			}
+            Regex regex = GetRegex(this);
+            if (regex == null)
+            {
+                return;
+            }
 
-			string[] strings;
-			// if checked, pass all lines as a single block
-			if (OneString.Checked)
-			{
-				strings = new string[1];
-				strings[0] = Strings.Text;
-			}
-			else
-			{
-				strings = Regex.Split(Strings.Text, @"\r\n");
-				//strings = Strings.Text.Split('\n\r');
-			}
+            var strings = GetStrings(this);
 
-			ReplaceMatchEvaluator replacer = null;
+            ReplaceMatchEvaluator replacer = null;
 
 			if (MatchEvaluator.Checked)
 			{
