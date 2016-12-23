@@ -1450,17 +1450,16 @@ namespace RegexTest
 		    form1.SaveValues();
 
 		    Regex regex = GetRegex(form1);
-		    if (regex == null)
+		    if (regex != null)
 		    {
-		        return;
-		    }
+		        var strings = GetStrings(form1);
 
-		    var strings = GetStrings(form1);
-
-		    using (new TimeOperation(form1.Elapsed))
-		    {
-		        form1.Output.Text = 
-                    RegexEvaluator.Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text), form1.HideGroupZero.Checked);
+		        using (new TimeOperation(form1.Elapsed))
+		        {
+		            form1.Output.Text =
+		                RegexEvaluator.Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text),
+		                    form1.HideGroupZero.Checked);
+		        }
 		    }
 		}
 
@@ -1628,28 +1627,24 @@ namespace RegexTest
 		{
 			SaveValues();
             Regex regex = GetRegex(this);
-            if (regex == null)
-            {
-                return;
-            }
+		    if (regex != null)
+		    {
+		        var strings = GetStrings(this);
 
-            var strings = GetStrings(this);
-
-		    Output.Text = RegexEvaluator.Split(strings, regex);
+		        Output.Text = RegexEvaluator.Split(strings, regex);
+		    }
 		}
 
 	    private void Replace_Click(object sender, System.EventArgs e)
 		{
 			SaveValues();
             Regex regex = GetRegex(this);
-            if (regex == null)
-            {
-                return;
-            }
+	        if (regex != null)
+	        {
+	            var strings = GetStrings(this);
 
-            var strings = GetStrings(this);
-
-            Output.Text = RegexEvaluator.DoReplace(regex, strings, MatchEvaluator.Checked, ReplaceString.Text);
+	            Output.Text = RegexEvaluator.DoReplace(regex, strings, MatchEvaluator.Checked, ReplaceString.Text);
+	        }
 		}
 
 	    private void makeAssemblyItem_Click(object sender, System.EventArgs e)
