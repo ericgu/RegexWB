@@ -1465,10 +1465,11 @@ namespace RegexTest
 
 		    var strings = GetStrings(form1);
 
-		    Execute(form1, regex, strings);
+		    var text1 = Execute(form1, regex, strings, Convert.ToInt32(form1.Iterations.Text), form1.HideGroupZero.Checked);
+		    form1.Output.Text = text1;
 		}
 
-	    private static void Execute(Form1 form1, Regex regex, string[] strings)
+	    private static string Execute(Form1 form1, Regex regex, string[] strings, int iterations, bool hideGroupZero)
 	    {
 	        string[] groupNames = regex.GetGroupNames();
 
@@ -1478,7 +1479,6 @@ namespace RegexTest
 	            outString.Append(String.Format("Matching: {0}\r\n", s));
 
 	            form1.Elapsed.Text = "";
-	            int iterations = Convert.ToInt32(form1.Iterations.Text);
 	            Counter counter = new Counter();
 	            counter.Start();
 	            Match m = null;
@@ -1505,8 +1505,8 @@ namespace RegexTest
 	                {
 	                    foreach (Capture capture in @group.Captures)
 	                    {
-	                        if ((form1.HideGroupZero.Checked == false) ||
-	                            (groupNames[groupNumber] != "0"))
+	                        if (!hideGroupZero ||
+	                            groupNames[groupNumber] != "0")
 	                        {
 	                            outString.Append(String.Format("    {0} => {1}\r\n", groupNames[groupNumber], capture));
 	                        }
@@ -1522,7 +1522,8 @@ namespace RegexTest
 	                outString.Append("    No Match\r\n");
 	            }
 	        }
-	        form1.Output.Text = outString.ToString();
+
+	        return outString.ToString();
 	    }
 
 	    private static string[] GetStrings(Form1 form1)
