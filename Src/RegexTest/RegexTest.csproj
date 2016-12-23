@@ -150,6 +150,7 @@
     <Compile Include="RegexConditional.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RegexEvaluator.cs" />
     <Compile Include="RegexExpression.cs">
       <SubType>Code</SubType>
     </Compile>

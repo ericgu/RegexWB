@@ -1469,64 +1469,12 @@ namespace RegexTest
 		    Counter counter1 = new Counter();
 		    counter1.Start();
 
-		    var text1 = Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text), form1.HideGroupZero.Checked);
+		    var text1 = RegexEvaluator.Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text), form1.HideGroupZero.Checked);
 		    form1.Output.Text = text1;
 
             counter1.Stop();
             form1.Elapsed.Text = String.Format("{0:f2}", counter1.Seconds);
         }
-
-        private static string Execute(Regex regex, string[] strings, int iterations, bool hideGroupZero)
-	    {
-	        string[] groupNames = regex.GetGroupNames();
-
-	        StringBuilder outString = new StringBuilder();
-	        foreach (string s in strings)
-	        {
-	            outString.Append(String.Format("Matching: {0}\r\n", s));
-
-	            Match m = null;
-	            for (int i = 0; i < iterations; i++)
-	            {
-	                m = regex.Match(s);
-	                while (m.Success)
-	                {
-	                    m = m.NextMatch();
-	                }
-	            }
-
-	            m = regex.Match(s);
-	            bool noMatch = true;
-	            while (m.Success)
-	            {
-	                noMatch = false;
-	                GroupCollection groups = m.Groups;
-
-	                int groupNumber = 0;
-	                foreach (Group group in m.Groups)
-	                {
-	                    foreach (Capture capture in @group.Captures)
-	                    {
-	                        if (!hideGroupZero ||
-	                            groupNames[groupNumber] != "0")
-	                        {
-	                            outString.Append(String.Format("    {0} => {1}\r\n", groupNames[groupNumber], capture));
-	                        }
-	                        //CaptureCollection c = group.Captures;
-	                    }
-	                    groupNumber++;
-	                }
-
-	                m = m.NextMatch();
-	            }
-	            if (noMatch)
-	            {
-	                outString.Append("    No Match\r\n");
-	            }
-	        }
-
-	        return outString.ToString();
-	    }
 
 	    private static string[] GetStrings(Form1 form1)
 	    {
