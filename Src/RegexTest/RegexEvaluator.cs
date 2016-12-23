@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using RegexTest;
 
 static internal class RegexEvaluator
 {
@@ -68,6 +69,43 @@ static internal class RegexEvaluator
                 outString.Append(String.Format("    [{0}] => {1}\r\n", index, split));
                 index++;
             }
+        }
+
+        return outString.ToString();
+    }
+
+    public static string DoReplace(Regex regex, string[] strings, bool useMatchEvaluator, string replaceText)
+    {
+        ReplaceMatchEvaluator replacer = null;
+        StringBuilder outString = new StringBuilder();
+
+        if (useMatchEvaluator)
+        {
+            replacer = new ReplaceMatchEvaluator(regex, replaceText);
+            string output = replacer.CreateAndLoadClass();
+            if (output != null)
+            {
+                outString.Append(output);
+            }
+        }
+
+        string replace = replaceText;
+        foreach (string s in strings)
+        {
+            outString.Append(String.Format("Replacing: {0}\r\n", s));
+
+            string output;
+            if (replacer != null)
+            {
+                outString.Append("  with a custom MatchEvaluator\r\n");
+                output = regex.Replace(s, replacer.MatchEvaluator);
+            }
+            else
+            {
+                outString.Append(String.Format("  with: {0}\r\n", replace));
+                output = regex.Replace(s, replace);
+            }
+            outString.Append(String.Format("  result: {0}\r\n", output));
         }
 
         return outString.ToString();

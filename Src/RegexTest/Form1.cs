@@ -1649,42 +1649,10 @@ namespace RegexTest
 
             var strings = GetStrings(this);
 
-            ReplaceMatchEvaluator replacer = null;
-
-			if (MatchEvaluator.Checked)
-			{
-				replacer = new ReplaceMatchEvaluator(regex, ReplaceString.Text);
-				string output = replacer.CreateAndLoadClass();
-				if (output != null)
-				{
-					Output.Text = output;
-					return;
-				}
-			}
-
-			StringBuilder outString = new StringBuilder();
-			string replace = ReplaceString.Text;
-			foreach (string s in strings)
-			{
-				outString.Append(String.Format("Replacing: {0}\r\n", s));
-				
-				string output = null;
-				if (this.MatchEvaluator.Checked)
-				{
-					outString.Append("  with a custom MatchEvaluator\r\n");	
-					output = regex.Replace(s, replacer.MatchEvaluator);
-				}
-				else
-				{
-					outString.Append(String.Format("  with: {0}\r\n", replace));	
-					output = regex.Replace(s, replace); 
-				}
-				outString.Append(String.Format("  result: {0}\r\n", output));
-			}
-			Output.Text = outString.ToString();
+            Output.Text = RegexEvaluator.DoReplace(regex, strings, MatchEvaluator.Checked, ReplaceString.Text);
 		}
 
-		private void makeAssemblyItem_Click(object sender, System.EventArgs e)
+	    private void makeAssemblyItem_Click(object sender, System.EventArgs e)
 		{
 			MakeAssemblyDialog dialog = new MakeAssemblyDialog();
 			if (dialog.ShowDialog() == DialogResult.OK)
