@@ -1450,31 +1450,26 @@ namespace RegexTest
 		    form1.SaveValues();
 
 		    Regex regex = null;
-		    try
+		    using (new TimeOperation(form1.CompileTime))
 		    {
-		        Counter counter = new Counter();
-		        counter.Start();
-		        regex = form1.CreateRegex();
-		        counter.Stop();
-		        form1.CompileTime.Text = counter.Seconds.ToString();
-		    }
-		    catch (Exception ex)
-		    {
-		        form1.Output.Text = ex.ToString();
+		        try
+		        {
+		            regex = form1.CreateRegex();
+		        }
+		        catch (Exception ex)
+		        {
+		            form1.Output.Text = ex.ToString();
+		        }
 		    }
 
 		    var strings = GetStrings(form1);
 
-		    form1.Elapsed.Text = "";
-		    Counter counter1 = new Counter();
-		    counter1.Start();
-
-		    var text1 = RegexEvaluator.Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text), form1.HideGroupZero.Checked);
-		    form1.Output.Text = text1;
-
-            counter1.Stop();
-            form1.Elapsed.Text = String.Format("{0:f2}", counter1.Seconds);
-        }
+		    using (new TimeOperation(form1.Elapsed))
+		    {
+		        form1.Output.Text = 
+                    RegexEvaluator.Execute(regex, strings, Convert.ToInt32(form1.Iterations.Text), form1.HideGroupZero.Checked);
+		    }
+		}
 
 	    private static string[] GetStrings(Form1 form1)
 	    {

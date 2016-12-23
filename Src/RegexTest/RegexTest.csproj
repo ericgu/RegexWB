@@ -178,6 +178,7 @@
     <Compile Include="TextBoxHoverable.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TimeOperation.cs" />
     <Content Include="App.ico" />
     <Content Include="Readme.txt" />
     <Content Include="todo.txt" />
