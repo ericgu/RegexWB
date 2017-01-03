@@ -1420,7 +1420,7 @@ namespace RegexTest
 			return new Regex(RegexText.Text, regOp);
 		}
 
-		private void MatchClick(object sender, System.EventArgs e)
+		private void MatchClick(object sender, EventArgs e)
 		{
 		    ExecuteOperation(new RegexMatcher(Int32.Parse(Iterations.Text), HideGroupZero.Checked));
 		}
