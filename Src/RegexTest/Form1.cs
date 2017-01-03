@@ -1411,7 +1411,7 @@ namespace RegexTest
 
 		private RegexOptions CreateRegexOptions()
 		{
-		    return CopyUIToSettings().RegexOptions;
+		    return CopyUiToSettings().RegexOptions;
 		}
 
 	    private Regex CreateRegex()
@@ -1452,7 +1452,7 @@ namespace RegexTest
 
 	    private Regex GetRegex()
 	    {
-	        Regex regex = null;
+	        Regex regex;
 	        using (new TimeOperation(CompileTime))
 	        {
 	            try
@@ -1490,12 +1490,12 @@ namespace RegexTest
 		private void SaveRegex(string filename)
 		{
 		    // write to SOAP (XML)
-		    var settings = CopyUIToSettings();
+		    var settings = CopyUiToSettings();
 
 		    SettingsStore.Save(filename, settings);
 		}
 
-	    private Settings CopyUIToSettings()
+	    private Settings CopyUiToSettings()
 	    {
 	        Settings settings = new Settings();
 	        settings.RegexText = RegexText.Text;
@@ -1520,11 +1520,11 @@ namespace RegexTest
 		    Settings settings = SettingsStore.Load(filename);
 		    if (settings != null)
 		    {
-		        CopySettingsToUI(settings);
+		        CopySettingsToUi(settings);
 		    }
 		}
 
-	    private void CopySettingsToUI(Settings settings)
+	    private void CopySettingsToUi(Settings settings)
 	    {
 	        RegexText.Text = settings.RegexText;
 	        Strings.Text = settings.Strings;
@@ -1605,11 +1605,6 @@ namespace RegexTest
 			}
 		}
 
-		private void CopyCSharp_Click(object sender, EventArgs e)
-		{
-
-		}
-
 	    private void RegexText_Leave(object sender, EventArgs e)
 		{
 			regexInsertionPoint = RegexText.SelectionStart;
@@ -1625,7 +1620,7 @@ namespace RegexTest
 			UpdateBackreferences(contextMenuAddItems, contextMenuBackreferences);
 		}
 
-		private void UpdateBackreferences(MenuItem addItem, MenuItem BackReferenceMenuItem)
+		private void UpdateBackreferences(MenuItem addMenuItem, MenuItem backReferenceMenuItem)
 		{
 
 				// BUG:
@@ -1633,9 +1628,9 @@ namespace RegexTest
 				// it, the newly added items don't show up. If you
 				// remove it from the context menu and then add it back
 				// it works fine. 
-			addItem.MenuItems.Remove(BackReferenceMenuItem);
+			addMenuItem.MenuItems.Remove(backReferenceMenuItem);
 
-			BackReferenceMenuItem.MenuItems.Clear();
+			backReferenceMenuItem.MenuItems.Clear();
 
 			Regex regexCapture = new Regex(
 				@"\(\?<
@@ -1651,8 +1646,8 @@ namespace RegexTest
 			{
 				string name = m.Groups["Name"].Value;
 				string item = String.Format("{0} - \\k<{1}>", name, name);
-				MenuItem menuItem = new MenuItem(item, new EventHandler(addItem_Click));
-				BackReferenceMenuItem.MenuItems.Add(menuItem);
+				MenuItem menuItem = new MenuItem(item, addItem_Click);
+				backReferenceMenuItem.MenuItems.Add(menuItem);
 				m = m.NextMatch();
 			}
 
@@ -1674,15 +1669,15 @@ namespace RegexTest
 				while (m.Success)
 				{
 					string item = String.Format("{0} - \\<{1}>", number, number);
-					MenuItem menuItem = new MenuItem(item, new EventHandler(addItem_Click));
-					BackReferenceMenuItem.MenuItems.Add(menuItem);
+					MenuItem menuItem = new MenuItem(item, addItem_Click);
+					backReferenceMenuItem.MenuItems.Add(menuItem);
 					number++;
 					m = m.NextMatch();
 				}
 
 			
 			}
-			addItem.MenuItems.Add(BackReferenceMenuItem);
+			addMenuItem.MenuItems.Add(backReferenceMenuItem);
 		}
 
 		
@@ -1696,8 +1691,8 @@ namespace RegexTest
 			{
 				string insert = match.Groups["Placeholder"].ToString();
 				regexInsertionPoint = RegexText.SelectionStart;
-				string start = "";
-				string end = "";
+				string start;
+				string end;
 
 				//try
 				//{
@@ -1727,7 +1722,7 @@ namespace RegexTest
 			}
 		}
 
-	    string MakeVBString()
+	    string MakeVbString()
 	    {
 	        return VbRegex.GetVbString(RegexText.Text, CreateRegexOptions());
 	    }
@@ -1743,12 +1738,7 @@ namespace RegexTest
 			}
 		}
 
-		private void RegexText_TextChanged(object sender, EventArgs e)
-		{
-			bufferDirty = true;
-		}
-
-		private HoverDetailAction RegexText_HoverDetail(object sender, HoverEventArgs args)
+	    private HoverDetailAction RegexText_HoverDetail(object sender, HoverEventArgs args)
 		{
 			HoverDetailAction action = null;
 			if (!HoverInterpret.Checked)
@@ -1757,7 +1747,7 @@ namespace RegexTest
 			UpdateBuffer();
 			try
 			{
-				RegexExpression exp = new RegexExpression(buffer);
+				new RegexExpression(buffer);
 			}
 			catch (Exception e)
 			{
@@ -1797,11 +1787,11 @@ namespace RegexTest
 			// get the contents of a C# regex, and make it nicer...
 		private void pasteFromCSharp_Click(object sender, EventArgs e)
 		{
-		    Settings settings = CopyUIToSettings();
+		    Settings settings = CopyUiToSettings();
 
 		    CSharpRegex.ParseCSharpToSettings(settings);
 
-		    CopySettingsToUI(settings);
+		    CopySettingsToUi(settings);
 		}
 
 	    private void copyAsCSharp_Click(object sender, EventArgs e)
@@ -1813,7 +1803,7 @@ namespace RegexTest
 
 		private void copyAsVB_Click(object sender, EventArgs e)
 		{
-			string vbSource = MakeVBString();
+			string vbSource = MakeVbString();
 			Clipboard.SetDataObject(vbSource);
 			Output.Text = vbSource;		
 		}
@@ -1850,7 +1840,7 @@ namespace RegexTest
 					LibraryMenuItem fileMenuItem = 
 						new LibraryMenuItem(fileInfo.FullName,
 											fileInfo.Name,
-											new EventHandler(libraryItem_Click));
+											libraryItem_Click);
 					collection.Add(fileMenuItem);
 				}
 			}
@@ -1912,8 +1902,7 @@ namespace RegexTest
 
 		private void menuItem71_Click(object sender, EventArgs e)
 		{
-			About about = new About();
-			about.ShowDialog();
+		    new About().ShowDialog();
 		}
 
 		private void menuReleaseNotes_Click(object sender, EventArgs e)
