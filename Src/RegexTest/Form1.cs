@@ -1804,55 +1804,9 @@ Regex r = new Regex(
 		}
 
 	    string MakeVBString()
-		{
-#if fred
-   Dim r As Regex
-      Dim m As Match
-    
-      r = New Regex("href\s*=\s*(?:""(?<1>[^""]*)""|(?<1>\S+))", _
-         RegexOptions.IgnoreCase Or RegexOptions.Compiled)
-    
-      m = r.Match(inputString)
-      While m.Success
-         Console.WriteLine("Found href " & m.Groups(1).Value _
-            & " at " & m.Groups(1).Index.ToString())
-         m = m.NextMatch()
-      End While
-   End Sub
-#endif
-			string s =
-				"Dim r as Regex\r\n\r\n" +
-				"r = new Regex( _\r\n";
-
-			Regex splitter = new Regex("\r\n");
-			string[] lines = splitter.Split(RegexText.Text);
-
-			s += "\"";
-			s += String.Join("\" + _ \r\n\"", lines);
-			s += "\" _\r\n";
-
-			ArrayList optionStrings = new ArrayList();
-			RegexOptions options = CreateRegexOptions();
-
-			foreach (RegexOptions option in Enum.GetValues(typeof(RegexOptions)))
-			{
-				if ((options & option) != 0)
-				{
-					optionStrings.Add("RegexOptions." + Enum.GetName(typeof(RegexOptions), option));
-				}
-			}	
-		
-			if (optionStrings.Count != 0)
-			{
-				s += ", ";
-				s += String.Join(" Or ", (string[]) optionStrings.ToArray(typeof(string)));
-			}
-
-			s += ")";
-
-			
-			return s;
-		}
+	    {
+	        return VbRegex.GetVbString(this.RegexText.Text, this.CreateRegexOptions());
+	    }
 
 
 	    private void UpdateBuffer()

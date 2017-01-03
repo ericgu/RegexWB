@@ -182,6 +182,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TimeOperation.cs" />
+    <Compile Include="VBRegex.cs" />
     <Content Include="App.ico" />
     <Content Include="Readme.txt" />
     <Content Include="todo.txt" />
