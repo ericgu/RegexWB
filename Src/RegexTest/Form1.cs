@@ -1644,49 +1644,7 @@ namespace RegexTest
 
 		}
 
-		string MakeCSharpString()
-		{
-			string s =
-				"Regex regex = new Regex(@\"\r\n" +
-				RegexText.Text.Replace("\"", "\"\"") +
-				"\", \r\n";
-
-			ArrayList optionStrings = new ArrayList();
-			RegexOptions options = CreateRegexOptions();
-
-			foreach (RegexOptions option in Enum.GetValues(typeof(RegexOptions)))
-			{
-				if ((options & option) != 0)
-				{
-					optionStrings.Add("RegexOptions." + Enum.GetName(typeof(RegexOptions), option));
-				}
-			}	
-		
-			if (optionStrings.Count != 0)
-			{
-				s += String.Join(" | \r\n", (string[]) optionStrings.ToArray(typeof(string)));
-			}
-			else
-			{
-				s += " (RegexOptions) 0";
-			}
-			s += ");";
-
-			s = s.Replace("\n", "\n\t\t\t\t");
-			return s;
-#if fred
-Regex r = new Regex(
-				@"(?<Field>         # capture to field
-				[^,""]+              # one or more not , or ""
-				|                 # or
-				""[^""]+              # "" and one or more not , or ""
-				""),               # end capture", 
-				RegexOptions.IgnorePatternWhitespace);
-			
-			#endif
-		}
-
-		private void RegexText_Leave(object sender, System.EventArgs e)
+	    private void RegexText_Leave(object sender, System.EventArgs e)
 		{
 			regexInsertionPoint = RegexText.SelectionStart;
 		}
@@ -1950,7 +1908,7 @@ Regex r = new Regex(
 
 		private void copyAsCSharp_Click(object sender, System.EventArgs e)
 		{
-			string csharpSource = MakeCSharpString();
+			string csharpSource = CSharpRegex.MakeCSharpString(RegexText.Text, CreateRegexOptions());
 			Clipboard.SetDataObject(csharpSource);
 			this.Output.Text = csharpSource;		
 		}

@@ -120,6 +120,7 @@
     <Compile Include="counter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CSharpRegex.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
