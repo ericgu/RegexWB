@@ -1594,23 +1594,8 @@ namespace RegexTest
 		}
 
 		// Go from commented regex version to non-commented version
-		private string RemoveWhitespace(string regexString)
-		{
-			if (!this.IgnoreWhitespace.Checked)
-				return regexString;
 
-				// first, get rid of all comments...
-			Regex removeComments = new Regex(@"\#.+");
-			regexString = removeComments.Replace(regexString, "");
-			
-				// remove un-escaped whitespace...
-			Regex removeWhitespace = new Regex(@"(?<!\\)[ \t\n]");
-			regexString = removeWhitespace.Replace(regexString, "");
-			regexString = regexString.Replace("\r", "");
-			return regexString;
-		}
-
-		private void Interpret_Click(object sender, System.EventArgs e)
+	    private void Interpret_Click(object sender, System.EventArgs e)
 		{
 			SaveValues();
 
@@ -1818,12 +1803,7 @@ Regex r = new Regex(
 			}
 		}
 
-		private void CopyVB_Click(object sender, System.EventArgs e)
-		{
-
-		}
-
-		string MakeVBString()
+	    string MakeVBString()
 		{
 #if fred
    Dim r As Regex
@@ -1875,13 +1855,7 @@ Regex r = new Regex(
 		}
 
 
-		private void about_Click(object sender, System.EventArgs e)
-		{
-			About about = new About();
-			about.ShowDialog();
-		}
-
-		private void UpdateBuffer()
+	    private void UpdateBuffer()
 		{
 			if (bufferDirty)
 			{
@@ -2115,12 +2089,7 @@ Regex r = new Regex(
 			RegexText.SelectAll();
 		}
 
-		private void addElement_Click(object sender, System.EventArgs e)
-		{
-			
-		}
-
-		private void MatchEvaluator_CheckedChanged(object sender, System.EventArgs e)
+	    private void MatchEvaluator_CheckedChanged(object sender, System.EventArgs e)
 		{
 			if (MatchEvaluator.Checked)
 			{
