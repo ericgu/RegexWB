@@ -179,6 +179,7 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SettingsStore.cs" />
     <Compile Include="TextBoxHoverable.cs">
       <SubType>Component</SubType>
     </Compile>

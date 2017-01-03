@@ -1515,56 +1515,42 @@ namespace RegexTest
 
 		private void SaveRegex(string filename)
 		{
-			// write to SOAP (XML)
-			using(FileStream streamWrite = File.Create(filename))
-			{
-				SoapFormatter soapWrite = new SoapFormatter();
+		    // write to SOAP (XML)
+		    var settings = CopyUIToSettings();
 
-				Settings settings = new Settings();
-				settings.RegexText = RegexText.Text;
-				settings.Strings = Strings.Text;
-				settings.IgnoreWhitespace = IgnoreWhitespace.Checked;
-				settings.IgnoreCase = IgnoreCase.Checked;
-				settings.Compiled = Compiled.Checked;
-				settings.ExplicitCapture = ExplicitCapture.Checked;
-				settings.Multiline = Multiline.Checked;
-				settings.Singleline = Singleline.Checked;
-				settings.Iterations = Iterations.Text;
-				settings.OneString = OneString.Checked;
-				settings.Description = Description.Text;
-				settings.ReplaceString = ReplaceString.Text;
-				settings.MatchEvaluator = MatchEvaluator.Checked;
-				settings.HideGroupZero = HideGroupZero.Checked;
-				soapWrite.Serialize(streamWrite, settings);
-			}
+		    SettingsStore.Save(filename, settings);
 		}
-		private void LoadRegex(string filename)
+
+	    private Settings CopyUIToSettings()
+	    {
+	        Settings settings = new Settings();
+	        settings.RegexText = RegexText.Text;
+	        settings.Strings = Strings.Text;
+	        settings.IgnoreWhitespace = IgnoreWhitespace.Checked;
+	        settings.IgnoreCase = IgnoreCase.Checked;
+	        settings.Compiled = Compiled.Checked;
+	        settings.ExplicitCapture = ExplicitCapture.Checked;
+	        settings.Multiline = Multiline.Checked;
+	        settings.Singleline = Singleline.Checked;
+	        settings.Iterations = Iterations.Text;
+	        settings.OneString = OneString.Checked;
+	        settings.Description = Description.Text;
+	        settings.ReplaceString = ReplaceString.Text;
+	        settings.MatchEvaluator = MatchEvaluator.Checked;
+	        settings.HideGroupZero = HideGroupZero.Checked;
+	        return settings;
+	    }
+
+	    private void LoadRegex(string filename)
 		{
-		    Settings settings = null;
-		    try
-			{
-			    using (FileStream streamRead = File.OpenRead(filename))
-				{
-				    try
-					{
-						SoapFormatter soapRead = new SoapFormatter();
-						settings = (Settings) soapRead.Deserialize(streamRead);
-					}
-					catch (Exception e)
-					{
-						string s = e.ToString();
-					}
-				}
-			}
-			catch (FileNotFoundException)
-			{
-				return;
-			}
+		    Settings settings = SettingsStore.Load(filename);
+		    if (settings != null)
+		    {
+		        CopySettingsToUI(settings);
+		    }
+		}
 
-            CopySettingsToUI(settings);
-        }
-
-        private void CopySettingsToUI(Settings settings)
+	    private void CopySettingsToUI(Settings settings)
 	    {
 	        RegexText.Text = settings.RegexText;
 	        Strings.Text = settings.Strings;
