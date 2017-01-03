@@ -1540,30 +1540,15 @@ namespace RegexTest
 		}
 		private void LoadRegex(string filename)
 		{
-			try
+		    Settings settings = null;
+		    try
 			{
-				using (FileStream streamRead = File.OpenRead(filename))
+			    using (FileStream streamRead = File.OpenRead(filename))
 				{
-					try
+				    try
 					{
 						SoapFormatter soapRead = new SoapFormatter();
-						Settings settings = 
-							(Settings) soapRead.Deserialize(streamRead);
-
-						RegexText.Text = settings.RegexText;
-						Strings.Text = settings.Strings;
-						IgnoreWhitespace.Checked = settings.IgnoreWhitespace;
-						IgnoreCase.Checked = settings.IgnoreCase;
-						Compiled.Checked = settings.Compiled;
-						ExplicitCapture.Checked = settings.ExplicitCapture;
-						Multiline.Checked = settings.Multiline;
-						Singleline.Checked = settings.Singleline;
-						Iterations.Text = settings.Iterations;
-						OneString.Checked = settings.OneString;
-						Description.Text = settings.Description;
-						MatchEvaluator.Checked = settings.MatchEvaluator;
-						ReplaceString.Text = settings.ReplaceString;
-						HideGroupZero.Checked = settings.HideGroupZero;
+						settings = (Settings) soapRead.Deserialize(streamRead);
 					}
 					catch (Exception e)
 					{
@@ -1575,8 +1560,29 @@ namespace RegexTest
 			{
 				return;
 			}
-		}
-		#endregion
+
+            CopySettingsToUI(settings);
+        }
+
+        private void CopySettingsToUI(Settings settings)
+	    {
+	        RegexText.Text = settings.RegexText;
+	        Strings.Text = settings.Strings;
+	        IgnoreWhitespace.Checked = settings.IgnoreWhitespace;
+	        IgnoreCase.Checked = settings.IgnoreCase;
+	        Compiled.Checked = settings.Compiled;
+	        ExplicitCapture.Checked = settings.ExplicitCapture;
+	        Multiline.Checked = settings.Multiline;
+	        Singleline.Checked = settings.Singleline;
+	        Iterations.Text = settings.Iterations;
+	        OneString.Checked = settings.OneString;
+	        Description.Text = settings.Description;
+	        MatchEvaluator.Checked = settings.MatchEvaluator;
+	        ReplaceString.Text = settings.ReplaceString;
+	        HideGroupZero.Checked = settings.HideGroupZero;
+	    }
+
+	    #endregion
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
