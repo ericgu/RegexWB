@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace RegexTest
 {
@@ -70,5 +71,22 @@ namespace RegexTest
 			info.AddValue("MatchEvaluator", MatchEvaluator);
 			info.AddValue("HideGroupZero", HideGroupZero);
 		}
+
+	    public RegexOptions RegexOptions
+	    {
+	        get
+	        {
+	            RegexOptions regOp = new RegexOptions();
+
+	            regOp |= IgnoreWhitespace ? RegexOptions.IgnorePatternWhitespace : (RegexOptions) 0;
+	            regOp |= IgnoreCase ? RegexOptions.IgnoreCase : (RegexOptions) 0;
+	            regOp |= Compiled ? RegexOptions.Compiled : (RegexOptions) 0;
+	            regOp |= ExplicitCapture ? RegexOptions.ExplicitCapture : (RegexOptions) 0;
+	            regOp |= Singleline ? RegexOptions.Singleline : (RegexOptions) 0;
+	            regOp |= Multiline ? RegexOptions.Multiline : (RegexOptions) 0;
+
+	            return regOp;
+	        }
+	    }
 	}
 }

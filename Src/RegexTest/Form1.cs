@@ -1411,36 +1411,10 @@ namespace RegexTest
 
 		private RegexOptions CreateRegexOptions()
 		{
-			RegexOptions regOp = new RegexOptions();
-			if (this.IgnoreWhitespace.Checked)
-			{
-				regOp |= RegexOptions.IgnorePatternWhitespace;
-			}
-			if (this.IgnoreCase.Checked)
-			{
-				regOp |= RegexOptions.IgnoreCase;
-			}
-			if (this.Compiled.Checked)
-			{
-				regOp |= RegexOptions.Compiled;
-			}
-			if (this.ExplicitCapture.Checked)
-			{
-				regOp |= RegexOptions.ExplicitCapture;
-			}
-			if (this.Singleline.Checked)
-			{
-				regOp |= RegexOptions.Singleline;
-			}
-			if (this.Multiline.Checked)
-			{
-				regOp |= RegexOptions.Multiline;
-			}
-
-			return regOp;
+		    return CopyUIToSettings().RegexOptions;
 		}
 
-		private Regex CreateRegex()
+	    private Regex CreateRegex()
 		{
 			RegexOptions regOp = CreateRegexOptions();
 			return new Regex(RegexText.Text, regOp);
@@ -1464,7 +1438,7 @@ namespace RegexTest
 	    {
 	        SaveValues();
 
-	        Regex regex = GetRegex(this);
+	        Regex regex = GetRegex();
 	        if (regex != null)
 	        {
 	            var strings = GetStrings(this);
@@ -1476,18 +1450,18 @@ namespace RegexTest
 	        }
 	    }
 
-	    private static Regex GetRegex(Form1 form1)
+	    private Regex GetRegex()
 	    {
 	        Regex regex = null;
-	        using (new TimeOperation(form1.CompileTime))
+	        using (new TimeOperation(CompileTime))
 	        {
 	            try
 	            {
-	                regex = form1.CreateRegex();
+	                regex = CreateRegex();
 	            }
 	            catch (Exception ex)
 	            {
-	                form1.Output.Text = ex.ToString();
+	                Output.Text = ex.ToString();
 	                return null;
 	            }
 	        }
@@ -1823,82 +1797,14 @@ namespace RegexTest
 			// get the contents of a C# regex, and make it nicer...
 		private void pasteFromCSharp_Click(object sender, System.EventArgs e)
 		{
-			IDataObject clipboard = Clipboard.GetDataObject();
-			string value = (string) clipboard.GetData(typeof(string));
+		    Settings settings = CopyUIToSettings();
 
-				// first, get rid of the "Regex regex line, if it exists"
-			Regex regex2 = new Regex(@"
-				^.+?new\ Regex\(@""(?<Rest>.+)
-				", 
-				RegexOptions.Multiline | 
-				RegexOptions.ExplicitCapture | 
-				RegexOptions.Singleline | 
-				RegexOptions.IgnorePatternWhitespace);
+		    CSharpRegex.ParseCSharpToSettings(settings);
 
-			Match m = regex2.Match(value);
-			if (m.Success)
-			{
-				value = m.Groups["Rest"].Value;
-			}
-
-				// get rid of the leading whitespace on each line...
-			Regex regex = new Regex(@"
-				^\s+
-				", 
-				RegexOptions.Multiline | 
-				RegexOptions.ExplicitCapture | 
-				RegexOptions.IgnorePatternWhitespace);
-
-			value = regex.Replace(value, "");
-
-				// see if there is a " and options after the string...
-			Regex regex3 = new Regex(@"
-				(?<Pattern>.+)^\s*"",(?<Rest>.+)
-				", 
-				RegexOptions.Multiline | 
-				RegexOptions.ExplicitCapture | 
-				RegexOptions.Singleline | 
-				RegexOptions.IgnorePatternWhitespace);
-
-			m = regex3.Match(value);
-			if (m.Success)
-			{
-				value = m.Groups["Pattern"].Value;
-
-					// clear all the patterns, and then set the ones
-					// that are on...
-				this.IgnoreCase.Checked = false;
-				this.IgnoreWhitespace.Checked = false;
-				this.Multiline.Checked = false;
-				this.Singleline.Checked = false;
-				this.Compiled.Checked = false;
-				this.ExplicitCapture.Checked = false;
-
-				string rest = m.Groups["Rest"].Value;
-				if (rest.IndexOf("IgnoreCase") != -1)
-					this.IgnoreCase.Checked = true;
-
-				if (rest.IndexOf("IgnorePatternWhitespace") != -1)
-					this.IgnoreWhitespace.Checked = true;
-
-				if (rest.IndexOf("Multiline") != -1)
-					this.Multiline.Checked = true;
-
-				if (rest.IndexOf("Singleline") != -1)
-					this.Singleline.Checked = true;
-
-				if (rest.IndexOf("Compiled") != -1)
-					this.Compiled.Checked = true;
-
-				if (rest.IndexOf("ExplicitCapture") != -1)
-					this.ExplicitCapture.Checked = true;
-			}
-
-				// change any double "" to "
-			RegexText.Text = value.Replace("\"\"", "\"");
+		    CopySettingsToUI(settings);
 		}
 
-		private void copyAsCSharp_Click(object sender, System.EventArgs e)
+	    private void copyAsCSharp_Click(object sender, System.EventArgs e)
 		{
 			string csharpSource = CSharpRegex.MakeCSharpString(RegexText.Text, CreateRegexOptions());
 			Clipboard.SetDataObject(csharpSource);
